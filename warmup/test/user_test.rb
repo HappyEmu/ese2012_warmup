@@ -9,5 +9,6 @@ class UserTest < Test::Unit::TestCase
     user.give_credits(20)
 
     assert(user.credits == 120)
+    assert(user.credits == 120)
   end
 end
