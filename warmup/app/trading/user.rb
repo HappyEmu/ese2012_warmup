@@ -1,6 +1,5 @@
 module Trading
   class User
-
     attr_accessor :name, :credits, :items
 
     def initialize
@@ -11,16 +10,23 @@ module Trading
     def self.named(name)
       user = User.new
       user.name = name
-      return name
+      return user
     end
 
     def add_item(item)
       self.items.push(item)
     end
 
-    def to_s
-      return "#{self.name}, #{self.credits}, #{self.items}"
+    def take_credits(amount)
+      self.credits -= amount
     end
 
+    def give_credits(amount)
+      self.credits += amount
+    end
+
+    def to_s
+      return "#{self.name}, #{self.credits}"
+    end
   end
 end

@@ -18,5 +18,9 @@ module Trading
       return "#{self.name}, #{self.price}, #{self.owner}, #{self.active}"
     end
 
+    def set_price(price)
+      self.price = price
+    end
+
   end
 end
