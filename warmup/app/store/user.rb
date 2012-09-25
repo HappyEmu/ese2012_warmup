@@ -1,4 +1,4 @@
-module Trading
+module Store
   class User
     attr_accessor :name, :credits, :items
 
@@ -20,7 +20,7 @@ module Trading
       return item
     end
 
-    def show_active_items
+    def get_active_items
       active_items = Array.new
       self.items.each do |item|
         if (item.active)

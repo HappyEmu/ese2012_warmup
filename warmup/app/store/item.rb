@@ -1,4 +1,4 @@
-module Trading
+module Store
   class Item
     attr_accessor :name, :price, :owner, :active
 
@@ -20,6 +20,14 @@ module Trading
 
     def set_price(price)
       self.price = price
+    end
+
+    def set_active
+      self.active = true
+    end
+
+    def set_inactive
+      self.active = false
     end
 
   end
