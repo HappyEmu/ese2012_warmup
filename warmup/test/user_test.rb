@@ -7,6 +7,9 @@ class UserTest < Test::Unit::TestCase
     user = Trading::User.named("Hans")
     puts user.to_s
     user.give_credits(20)
+    user.create_item("Test Item", 500);
+    puts user.items[0].to_s
+    puts user.show_active_items
 
     assert(user.credits == 120)
     assert(user.credits == 120)

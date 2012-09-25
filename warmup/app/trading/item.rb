@@ -15,7 +15,7 @@ module Trading
     end
 
     def to_s
-      return "#{self.name}, #{self.price}, #{self.owner}, #{self.active}"
+      return "#{self.name}, #{self.price}, #{self.owner}, #{self.active ? "active" : "inactive"}"
     end
 
     def set_price(price)
