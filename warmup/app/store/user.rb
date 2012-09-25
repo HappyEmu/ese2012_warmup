@@ -14,7 +14,7 @@ module Store
       return user
     end
 
-    def create_item(name, price)
+    def propose_item(name, price)
       item = Item.named_priced_with_owner(name, price, self)
       self.items.push(item)
       return item
