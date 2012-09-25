@@ -18,16 +18,16 @@ module Store
       return "#{self.name}, #{self.price}, #{self.owner}, #{self.active ? "active" : "inactive"}"
     end
 
-    def set_price(price)
-      self.price = price
-    end
-
     def set_active
       self.active = true
     end
 
     def set_inactive
       self.active = false
+    end
+
+    def active?
+      return self.active
     end
 
   end

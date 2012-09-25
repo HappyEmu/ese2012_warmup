@@ -6,6 +6,7 @@ class ItemTest < Test::Unit::TestCase
   def test_item_name
     item_name = "TestItem"
     item = Store::Item.named_priced_with_owner(item_name, 0, nil)
+    assert_not_nil(item.name, "Item has no name")
     assert(item.name == item_name)
   end
 

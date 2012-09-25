@@ -7,14 +7,16 @@ class UserTest < Test::Unit::TestCase
     name = "Hansli Caramell"
     user = Store::User.named(name)
 
+    assert(!user.name.nil? ,"No User Name")
     assert(user.name == name, "Wrong User name")
+
   end
 
   def test_default_credits_amount
-    amount = 100
+    default_amount = 100
     user = Store::User.new
 
-    assert(user.credits == amount)
+    assert(user.credits == default_amount)
   end
 
   def test_custom_credits_amount
@@ -49,5 +51,54 @@ class UserTest < Test::Unit::TestCase
 
     # '==' operator of Array class tests for equal length and matching elements
     assert(active_items == active_items_user, "Item lists do not match!")
-    end
+  end
+
+  def test_user_buy_success
+    buyer = Store::User.named("buyer")
+    seller = Store::User.named("seller")
+
+    item = seller.create_item("piece of crap", 100)
+    item.set_active
+    assert(buyer.buy_item(item) == true, "transaction failed")
+    assert(buyer.credits == 0, "Buyer has too many credits left")
+    assert(seller.credits == 200, "Seller has too few credits")
+    assert(!seller.items.include?(item), "Seller still owns the sold item")
+    assert(!item.active?, "Item is still active")
+    assert(item.owner == buyer, "Item has the wrong owner")
+    assert(buyer.items.include?(item), "buyer doesn't have the item")
+  end
+
+  def test_user_buy_inactive_item
+    buyer = Store::User.named("buyer")
+    seller = Store::User.named("seller")
+
+    item = seller.create_item("piece of crap", 100)
+
+    assert(!item.active?)
+    assert(buyer.buy_item(item)==false,"the transaction should have failed but it did not")
+
+    assert(buyer.credits == 100, "transaction succeeded")
+    assert(seller.credits == 100, "transaction succeeded")
+    assert(seller.items.include?(item), "Seller does not own the item")
+    assert(!item.active?, "Item is active")
+    assert(item.owner == seller, "Item has the wrong owner")
+    assert(!buyer.items.include?(item), "buyer bought the item")
+  end
+
+  def test_user_buy_too_expensive
+    buyer = Store::User.named("buyer")
+    seller = Store::User.named("seller")
+
+    item = seller.create_item("big piece of crap", 9001)
+    item.set_active
+
+    assert(item.active?, "item is inactive")
+    assert(buyer.buy_item(item)==false,"the transaction should have failed but it did not")
+
+    assert(buyer.credits == 100, "transaction succeeded")
+    assert(seller.credits == 100, "transaction succeeded")
+    assert(seller.items.include?(item), "Seller does not own the item")
+    assert(item.owner == seller, "Item has the wrong owner")
+    assert(!buyer.items.include?(item), "buyer bought the item")
+  end
 end

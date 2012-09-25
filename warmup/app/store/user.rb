@@ -44,20 +44,22 @@ module Store
     end
 
     def buy_item(item)
-      # check for moneys and activity first
       seller = item.owner
 
-      if (!seller.nil?)
-        seller.remove_item(item)
-        seller.credits += item.price
+      if seller.nil? or self.credits < item.price or !item.active? or !seller.items.include?(item)
+        return false
       end
+
+      seller.remove_item(item)
+      seller.credits += item.price
+
 
       item.owner = self
       item.active = false
       self.add_item(item)
       self.credits -= item.price
 
-      # maybe return boolean for success
+      return true
     end
 
     def to_s
