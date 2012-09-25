@@ -9,7 +9,6 @@ class UserTest < Test::Unit::TestCase
 
     assert(!user.name.nil? ,"No User Name")
     assert(user.name == name, "Wrong User name")
-
   end
 
   def test_default_credits_amount
@@ -27,9 +26,9 @@ class UserTest < Test::Unit::TestCase
     assert(user.credits == amount)
   end
 
-  def test_user_creates_item
+  def test_user_proposes_item
     user = Store::User.named("User")
-    item = user.create_item("TestItem", 100)
+    item = user.propose_item("TestItem", 100)
 
     assert(item.active == false, "Newly created items must be inactive!")
     assert(item.owner == user, "Item with no assigned owner created!")
@@ -38,10 +37,10 @@ class UserTest < Test::Unit::TestCase
   def test_user_active_items_list
     user = Store::User.named("User")
 
-    user.create_item("TestItem1", 1)
-    item2 = user.create_item("TestItem2", 2)
-    user.create_item("TestItem3", 3)
-    item4 = user.create_item("TestItem4", 4)
+    user.propose_item("TestItem1", 1)
+    item2 = user.propose_item("TestItem2", 2)
+    user.propose_item("TestItem3", 3)
+    item4 = user.propose_item("TestItem4", 4)
 
     item2.set_active
     item4.set_active
@@ -57,7 +56,7 @@ class UserTest < Test::Unit::TestCase
     buyer = Store::User.named("Buyer")
     seller = Store::User.named("Seller")
 
-    item = seller.create_item("piece of crap", 100)
+    item = seller.propose_item("piece of crap", 100)
     item.set_active
 
     transaction_result, transaction_message = buyer.buy_item(item)
@@ -77,7 +76,7 @@ class UserTest < Test::Unit::TestCase
     buyer = Store::User.named("Buyer")
     seller = Store::User.named("Seller")
 
-    item = seller.create_item("piece of crap", 100)
+    item = seller.propose_item("piece of crap", 100)
 
     assert(!item.active?)
 
@@ -98,7 +97,7 @@ class UserTest < Test::Unit::TestCase
     buyer = Store::User.named("Buyer")
     seller = Store::User.named("Seller")
 
-    item = seller.create_item("big piece of crap", 9001) #item price is over 9000!
+    item = seller.propose_item("big piece of crap", 9001) #item price is over 9000!
     item.set_active
 
     assert(item.active?)

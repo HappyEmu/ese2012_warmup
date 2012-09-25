@@ -23,7 +23,7 @@ class ItemTest < Test::Unit::TestCase
 
   def test_item_has_owner
     user = Store::User.named("User")
-    item = user.create_item("TestItem", 100)
+    item = user.propose_item("TestItem", 100)
     assert(item.owner == user)
   end
 
