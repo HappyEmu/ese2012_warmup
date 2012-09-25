@@ -41,17 +41,13 @@ class UserTest < Test::Unit::TestCase
     item3 = user.create_item("TestItem3", 3)
     item4 = user.create_item("TestItem4", 4)
 
-    user.add_item(item1)
-    user.add_item(item2)
-    user.add_item(item3)
-    user.add_item(item4)
-
     item2.set_active
     item4.set_active
 
     active_items = [item2, item4]
     active_items_user = user.get_active_items
 
-    assert(active_items.length == active_items_user.length)
+    # '==' operator of Array class tests for equal length and matching elements
+    assert(active_items == active_items_user, "Item lists do not match!")
     end
 end

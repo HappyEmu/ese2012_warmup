@@ -23,7 +23,7 @@ module Store
     def get_active_items
       active_items = Array.new
       self.items.each do |item|
-        if (item.active)
+        if item.active == true
           active_items.push(item)
         end
       end
