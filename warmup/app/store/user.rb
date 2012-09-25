@@ -37,7 +37,7 @@ module Store
     end
 
     def remove_item(item)
-      if (self.items.include? item)
+      if self.items.include?(item)
         item.owner = nil
         self.items.delete(item)
       end
@@ -46,20 +46,26 @@ module Store
     def buy_item(item)
       seller = item.owner
 
-      if seller.nil? or self.credits < item.price or !item.active? or !seller.items.include?(item)
-        return false
+      if seller.nil?
+        return false, "Item does not belong to anybody"
+      elsif self.credits < item.price
+        return false, "Buyer does not have enough credits"
+      elsif !item.active?
+        return false, "Trying to buy inactive item"
+      elsif !seller.items.include?(item)
+        return false, "Seller does not own item to buy"
       end
 
       seller.remove_item(item)
       seller.credits += item.price
 
-
       item.owner = self
       item.active = false
+
       self.add_item(item)
       self.credits -= item.price
 
-      return true
+      return true, "Transaction successful"
     end
 
     def to_s

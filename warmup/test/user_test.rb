@@ -38,9 +38,9 @@ class UserTest < Test::Unit::TestCase
   def test_user_active_items_list
     user = Store::User.named("User")
 
-    item1 = user.create_item("TestItem1", 1)
+    user.create_item("TestItem1", 1)
     item2 = user.create_item("TestItem2", 2)
-    item3 = user.create_item("TestItem3", 3)
+    user.create_item("TestItem3", 3)
     item4 = user.create_item("TestItem4", 4)
 
     item2.set_active
@@ -49,56 +49,70 @@ class UserTest < Test::Unit::TestCase
     active_items = [item2, item4]
     active_items_user = user.get_active_items
 
-    # '==' operator of Array class tests for equal length and matching elements
+    # '==' operator of Array class tests for equal length and matching elements, does not compare references!
     assert(active_items == active_items_user, "Item lists do not match!")
   end
 
   def test_user_buy_success
-    buyer = Store::User.named("buyer")
-    seller = Store::User.named("seller")
+    buyer = Store::User.named("Buyer")
+    seller = Store::User.named("Seller")
 
     item = seller.create_item("piece of crap", 100)
     item.set_active
-    assert(buyer.buy_item(item) == true, "transaction failed")
+
+    transaction_result, transaction_message = buyer.buy_item(item)
+    assert(transaction_result == true, "Transaction failed when it should have succeeded\nReason: #{transaction_message}")
+
     assert(buyer.credits == 0, "Buyer has too many credits left")
     assert(seller.credits == 200, "Seller has too few credits")
+
     assert(!seller.items.include?(item), "Seller still owns the sold item")
-    assert(!item.active?, "Item is still active")
+    assert(buyer.items.include?(item), "Buyer doesn't have the item")
     assert(item.owner == buyer, "Item has the wrong owner")
-    assert(buyer.items.include?(item), "buyer doesn't have the item")
+
+    assert(!item.active?, "Item is still active")
   end
 
   def test_user_buy_inactive_item
-    buyer = Store::User.named("buyer")
-    seller = Store::User.named("seller")
+    buyer = Store::User.named("Buyer")
+    seller = Store::User.named("Seller")
 
     item = seller.create_item("piece of crap", 100)
 
     assert(!item.active?)
-    assert(buyer.buy_item(item)==false,"the transaction should have failed but it did not")
 
-    assert(buyer.credits == 100, "transaction succeeded")
-    assert(seller.credits == 100, "transaction succeeded")
-    assert(seller.items.include?(item), "Seller does not own the item")
-    assert(!item.active?, "Item is active")
+    transaction_result, transaction_message = buyer.buy_item(item)
+    puts transaction_message
+
+    assert(transaction_result == false,"Transaction should have failed but it did not")
+
+    assert(buyer.credits == 100, "Buyer's credits changed when they should not have")
+    assert(seller.credits == 100, "Seller's credits changed when they should not have")
+
+    assert(seller.items.include?(item), "Seller does not own the item it wants to sell")
+    assert(!buyer.items.include?(item), "Buyer bought the item when it should not have been able to do so")
     assert(item.owner == seller, "Item has the wrong owner")
-    assert(!buyer.items.include?(item), "buyer bought the item")
   end
 
   def test_user_buy_too_expensive
-    buyer = Store::User.named("buyer")
-    seller = Store::User.named("seller")
+    buyer = Store::User.named("Buyer")
+    seller = Store::User.named("Seller")
 
-    item = seller.create_item("big piece of crap", 9001)
+    item = seller.create_item("big piece of crap", 9001) #item price is over 9000!
     item.set_active
 
-    assert(item.active?, "item is inactive")
-    assert(buyer.buy_item(item)==false,"the transaction should have failed but it did not")
+    assert(item.active?)
 
-    assert(buyer.credits == 100, "transaction succeeded")
-    assert(seller.credits == 100, "transaction succeeded")
-    assert(seller.items.include?(item), "Seller does not own the item")
+    transaction_result, transaction_message = buyer.buy_item(item)
+    puts transaction_message
+
+    assert(transaction_result == false,"Transaction should have failed but it did not")
+
+    assert(buyer.credits == 100, "Buyer has wrong amount of credits")
+    assert(seller.credits == 100, "Seller has wrong amount of credits")
+
+    assert(seller.items.include?(item), "Seller does not own the item it wants to sell")
+    assert(!buyer.items.include?(item), "Buyer bought the item when it should not have been able to do so")
     assert(item.owner == seller, "Item has the wrong owner")
-    assert(!buyer.items.include?(item), "buyer bought the item")
   end
 end
