@@ -2,6 +2,16 @@ require 'test/unit'
 require '../app/store/user'
 require '../app/store/item'
 
+# AK there are some additional assert methods, that produce better 
+# default messages (so you don't need to provide messages for all
+# assertions):
+# http://www.ruby-doc.org/stdlib-1.9.3/libdoc/test/unit/rdoc/Test/Unit/Assertions.html
+# examples:
+# assert_equal(left, right)
+# assert_not_nil(x)
+# assert_raise do
+#   1/0
+# end
 class UserTest < Test::Unit::TestCase
   def test_check_user_name
     name = "Hansli Caramell"
